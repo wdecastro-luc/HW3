@@ -1,6 +1,6 @@
 
 /*
- * *** YOUR NAME GOES HERE / YOUR SECTION NUMBER ***
+//Warren DeCastro 272-002
  *
  * This java file is a Java object implementing simple AVL Tree.
  * You are to complete the deleteElement method.
@@ -308,9 +308,9 @@ class LUC_AVLTree {
      *       with right subtree)
      *    4. interior node with both a left and right subtree below it. In this
      *       scenario, it gets the inorder successor node (aka, the smallest 
-     *       value node in the right subtree, this is accomplished by using 
+     *       value node in the right subtree, this is accomplished by using
      *       method minValueNode()). Once found, it then copies the inorder
-     *       successor node's value to this node, which for all purposes deletes 
+     *       successor node's value to this node, which for all purposes deletes
      *       the node. Finally, it needs to delete that inorder successor node 
      *       from the right subtree.
      *
@@ -342,26 +342,44 @@ class LUC_AVLTree {
      */
 
     private Node deleteElement(int value, Node node) {
+        if (node == null) {
+            return node;
+        }
 
-        /*
-         * ADD CODE HERE
-         * 
-         * NOTE, that you should use the existing coded private methods
-         * in this file, which include:
-         *      - minValueNode,
-         *      - getMaxHeight,
-         *      - getHeight,
-         *      - getBalanceFactor,
-         *      - LLRotation
-         *      - RRRotation,
-         *      - LRRotation,
-         *      - RLRotation.
-         *
-         * To understand what each of these methods do, see the method prologues and
-         * code for each. You can also look at the method InsertElement, as it has do
-         * do many of the same things as this method.
-         */
+        if (value < node.value) {
+            node.leftChild = deleteElement(value, node.leftChild);
+        }
+        else if (value > node.value) {
+            node.rightChild = deleteElement(value, node.rightChild);
+        }
+        else {
+            if (node.leftChild == null) {
+                return node.rightChild;
+            } else if (node.rightChild == null) {
+                return node.leftChild;
+            }
 
+            Node temp = minValueNode(node.rightChild);
+            node.value = temp.value;
+            node.rightChild = deleteElement(temp.value, node.rightChild);
+
+            node.height = (getMaxHeight( getHeight(node.leftChild), getHeight(node.rightChild))) + 1;
+            int bf = getBalanceFactor(node);
+
+            if (Math.abs(bf) > 1 && getBalanceFactor(node.rightChild) <= 0) {
+                node = RRRotation(node);
+            }
+            if (Math.abs(bf) > 1 && getBalanceFactor(node.leftChild) < 0) {
+                node = LRRotation(node);
+            }
+            if (Math.abs(bf) > 1 && getBalanceFactor(node.leftChild) >= 0) {
+                node = LLRotation(node);
+            }
+            if (Math.abs(bf) > 1 && getBalanceFactor(node.rightChild) > 0) {
+                node = RLRotation(node);
+            }
+            else ;
+        }
         return node;
     }
 
